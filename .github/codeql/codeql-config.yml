@@ -1,0 +1,27 @@
+# CodeQL config
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.cjs"
+  - "**/*.mjs"
+
+paths-ignore:
+  - "node_modules/**"
+  - "dist/**"
+  - ".blast/**"
+  - "coverage/**"
+  - ".github/**"
+
+# Upload results as PR decorations
+uploads:
+  # On PRs, the run will compare the analysis with the base branch
+  # and show annotations.
+  # On pushes to the default branch, the alerts will be shown in the
+  # Security tab.
+  category: "code-scanning"

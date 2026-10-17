@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "language": "javascript",
+  "ci": {
+    "commit-hash": "github.sha"
+  },
+  "checks": {
+    "javascript": {
+      "code-style": {
+        "enabled": true
+      },
+      "code-metrics": {
+        "enabled": true
+      },
+      "code-scan-security": {
+        "enabled": true
+      },
+      "secrets": {
+        "enabled": true
+      },
+      "shellcheck": {
+        "enabled": true
+      },
+      "semgrep": {
+        "enabled": true,
+        "config": ["p/ci"]
+      },
+      "coverage-miscalculation": {
+        "enabled": true
+      },
+      "unused-variables": {
+        "enabled": true
+      },
+      "performance": {
+        "enabled": true
+      },
+      "maintainability": {
+        "enabled": true
+      }
+    },
+    "test-coverage": {
+      "enabled": true,
+      "target": "auto",
+      "~tags": ["test"]
+    }
+  },
+  "analysis": {
+    "repo-management-metrics": {
+      "enabled": true
+    },
+    "technical-debt": {
+      "enabled": true
+    }
+  },
+  "exclude-patterns": [
+    "node_modules/**",
+    "dist/**",
+    ".blast/**",
+    "coverage/**"
+  ]
+}

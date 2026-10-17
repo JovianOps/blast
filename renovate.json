@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "docker:enable",
+    "github-actions:enable",
+    "npm:enable"
+  ],
+  "timezone": "Asia/Jakarta",
+  "schedule": ["before 9am on Monday"],
+  "ignoreUnstable": true,
+  "prPriority": 10,
+  "openPullRequestsLimit": 5,
+  "reviewers": ["athallajovian9-cyber"],
+  "labels": ["dependencies", "renovate-created"],
+  "commitMessage": "deps: {{depName}} {{depType}} {{depCurrent}} → {{newVersion}}",
+  "group": {
+    "strategy": "splat",
+    "commit": true
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["@babel/parser", "@babel/traverse", "@babel/types"],
+      "prBodyNotes": [
+        "⚠️ Babel packages — security-sensitive, review carefully."
+      ],
+      "schedule": ["before 9am on Monday"]
+    }
+  ]
+}

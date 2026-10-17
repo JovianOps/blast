@@ -1,0 +1,37 @@
+name: Deepsource
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  deepsource:
+    name: DeepSource Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run DeepSource
+        uses: deepsource-io/deepsource-action@v2
+        with:
+          command: analyze
+          token-secret: ${{ secrets.DEEP_SOURCE_KEY }}
+          commit-sha: ${{ github.sha }}
+          environment: test
+          build-file: .deepsource.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: DeepSource Coverage
+        if: success()
+        uses: deepsource-io/deepsource-action@v2
+        with:
+          command: coverage
+          token-secret: ${{ secrets.DEEP_SOURCE_KEY }}
+          commit-sha: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
