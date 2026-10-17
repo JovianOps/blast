@@ -1,0 +1,47 @@
+{
+  "name": "blast",
+  "version": "0.1.0",
+  "description": "Blast Radius for code deletions — see what breaks before you delete a file, directory, or export",
+  "type": "module",
+  "bin": {
+    "blast": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0",
+    "@babel/types": "^7.26.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ignore": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.6",
+    "@types/node": "^20.16.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "author": "Athalla Jovian Maharsa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/athallajovian9-cyber/blast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/athallajovian9-cyber/blast/issues"
+  },
+  "homepage": "https://github.com/athallajovian9-cyber/blast#readme"
+}
