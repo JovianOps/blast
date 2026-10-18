@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseSource } from './parser';
+import { parseSource } from './parser.js';
 
 describe('parseSource', () => {
   it('detects static imports', () => {

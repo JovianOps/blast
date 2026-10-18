@@ -281,9 +281,10 @@ export function parseSource(filePath: string, source: string): ParsedFile {
 
       for (const spec of node.specifiers) {
         if (!t.isExportSpecifier(spec)) continue;
+        const localName = t.isIdentifier(spec.local) ? spec.local.name : spec.local.value;
         exports.push({
           name: moduleExportName(spec.exported),
-          kind: kindOfBinding(p.scope, spec.local.name),
+          kind: kindOfBinding(p.scope, localName),
           line,
           typeOnly: declTypeOnly || spec.exportKind === 'type',
         });
@@ -328,6 +329,13 @@ export function parseSource(filePath: string, source: string): ParsedFile {
         imports.push({ specifier, line: lineOf(p.node), kind: 'dynamic', bindings: [] });
       } else if (t.isIdentifier(callee, { name: 'require' }) && !p.scope.getBinding('require')) {
         imports.push({ specifier, line: lineOf(p.node), kind: 'require', bindings: [] });
+      }
+    },
+
+    ImportExpression(p: NodePath<t.ImportExpression>) {
+      const src = p.node.source;
+      if (t.isStringLiteral(src)) {
+        imports.push({ specifier: src.value, line: lineOf(p.node), kind: 'dynamic', bindings: [] });
       }
     },
 
