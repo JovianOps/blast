@@ -9,6 +9,8 @@ import type { ExportInfo, ExportKind, ImportedBinding, ImportKind, UsageSite } f
 type TraverseFn = typeof traverseImport;
 // @babel/traverse is CJS; under NodeNext the callable lives on `.default` at runtime.
 const traverse: TraverseFn = (traverseImport as unknown as { default?: TraverseFn }).default ?? traverseImport;
+// The Babel visitor type expects a specific signature; cast for caller compatibility.
+const traverseAny = traverse as unknown as (ast: t.File, visitor: import('@babel/traverse').Visitor) => void;
 
 export interface RawImport {
   specifier: string;
@@ -217,8 +219,8 @@ export function parseSource(filePath: string, source: string): ParsedFile {
   const imports: RawImport[] = [];
   const exports: ExportInfo[] = [];
 
-  traverse(ast, {
-    ImportDeclaration(p) {
+  traverseAny(ast, {
+    ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
       const node = p.node;
       const declTypeOnly = node.importKind === 'type' || node.importKind === 'typeof';
       const bindings: ImportedBinding[] = node.specifiers.map((spec) => {
@@ -243,7 +245,7 @@ export function parseSource(filePath: string, source: string): ParsedFile {
       });
     },
 
-    ExportNamedDeclaration(p) {
+    ExportNamedDeclaration(p: NodePath<t.ExportNamedDeclaration>) {
       const node = p.node;
       const line = lineOf(node);
       const declTypeOnly = node.exportKind === 'type';
@@ -288,7 +290,7 @@ export function parseSource(filePath: string, source: string): ParsedFile {
       }
     },
 
-    ExportAllDeclaration(p) {
+    ExportAllDeclaration(p: NodePath<t.ExportAllDeclaration>) {
       const node = p.node;
       imports.push({
         specifier: node.source.value,
@@ -298,7 +300,7 @@ export function parseSource(filePath: string, source: string): ParsedFile {
       });
     },
 
-    ExportDefaultDeclaration(p) {
+    ExportDefaultDeclaration(p: NodePath<t.ExportDefaultDeclaration>) {
       const decl = p.node.declaration;
       let kind: ExportKind = 'default';
       let typeOnly = false;
@@ -311,14 +313,14 @@ export function parseSource(filePath: string, source: string): ParsedFile {
       exports.push({ name: 'default', kind, line: lineOf(p.node), typeOnly });
     },
 
-    TSImportEqualsDeclaration(p) {
+    TSImportEqualsDeclaration(p: NodePath<t.TSImportEqualsDeclaration>) {
       const ref = p.node.moduleReference;
       if (t.isTSExternalModuleReference(ref)) {
         imports.push({ specifier: ref.expression.value, line: lineOf(p.node), kind: 'require', bindings: [] });
       }
     },
 
-    CallExpression(p) {
+    CallExpression(p: NodePath<t.CallExpression>) {
       const specifier = literalArgument(p.node);
       if (specifier === null) return;
       const callee = p.node.callee;
@@ -329,7 +331,7 @@ export function parseSource(filePath: string, source: string): ParsedFile {
       }
     },
 
-    AssignmentExpression(p) {
+    AssignmentExpression(p: NodePath<t.AssignmentExpression>) {
       collectCommonJsExports(p, exports);
     },
   });
